@@ -55,6 +55,10 @@ class Field:
         prev_x, prev_y, prev_theta = x.ravel()
         rot1, trans, rot2 = u.ravel()
 
+        G = np.eye(3)
+        G[0, 2] = -trans * np.sin(prev_theta + rot1)
+        G[1, 2] = trans * np.cos(prev_theta + rot1)
+        return G
 
     def V(self, x, u):
         """Compute the Jacobian of the dynamics with respect to the control."""
