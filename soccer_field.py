@@ -76,7 +76,21 @@ class Field:
     def H(self, x, marker_id):
         """Compute the Jacobian of the observation with respect to the state."""
         prev_x, prev_y, prev_theta = x.ravel()
-        # YOUR IMPLEMENTATION HERE
+        
+        marker_x = self.MARKER_X_POS[marker_id]
+        marker_y = self.MARKER_Y_POS[marker_id]
+
+        dx = marker_x - prev_x
+        dy = marker_y - prev_y
+
+        q = dx**2 + dy**2
+        
+        H = np.zeros((1, 3))
+        H[0, 0] = -dy / q
+        H[0, 1] = -dx / q
+        H[0, 2] = -1
+        
+        return H
 
     def forward(self, x, u):
         """Compute next state, given current state and action.
