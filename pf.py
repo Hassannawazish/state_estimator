@@ -31,7 +31,16 @@ class ParticleFilter:
         z: landmark observation
         marker_id: landmark ID
         """
-        # YOUR IMPLEMENTATION HERE
+        for i in range(self.num_particles):
+            self.particles[i, :] = env.forward(self.particles[i, :], u).ravel()
+
+        for i in range(self.num_particles):
+            z_pred = env.observe(self.particles[i, :], marker_id)
+            innovation = z - z_pred
+            self.weights[i] = env.likelihood(innovation, self.beta)
+        self.weights /= np.sum(self.weights)
+        self.particles, self.weights = self.resample(self.particles, self.weights)
+
         mean, cov = self.mean_and_variance(self.particles)
         return mean, cov
 
@@ -42,8 +51,16 @@ class ParticleFilter:
         particles: (n x 3) matrix of poses
         weights: (n,) array of weights
         """
-        new_particles, new_weights = particles, weights
-        # YOUR IMPLEMENTATION HERE
+        new_particles = np.zeros_like(particles)
+        new_weights = np.ones_like(weights) / self.num_particles
+        cumulative_sum = np.cumsum(weights)
+        cumulative_sum[-1] = 1.0
+
+        indices = np.searchsorted(cumulative_sum, np.random.random(self.num_particles))
+
+        for i, idx in enumerate(indices):
+            new_particles[i, :] = particles[idx, :]
+
         return new_particles, new_weights
 
     def mean_and_variance(self, particles):
