@@ -32,12 +32,13 @@ class ParticleFilter:
         marker_id: landmark ID
         """
         for i in range(self.num_particles):
-            self.particles[i, :] = env.forward(self.particles[i, :], u).ravel()
+                self.particles[i, :] = env.forward(self.particles[i], env.sample_noisy_action(u, self.alphas)).ravel()
 
         for i in range(self.num_particles):
-            z_pred = env.observe(self.particles[i, :], marker_id)
-            innovation = z - z_pred
+            z_hat = env.observe(self.particles[i], marker_id)
+            innovation = np.array([[minimized_angle(z[0, 0] - z_hat[0, 0])]])
             self.weights[i] = env.likelihood(innovation, self.beta)
+        self.weights += 1e-300
         self.weights /= np.sum(self.weights)
         self.particles, self.weights = self.resample(self.particles, self.weights)
 
@@ -51,16 +52,22 @@ class ParticleFilter:
         particles: (n x 3) matrix of poses
         weights: (n,) array of weights
         """
+        new_particles, new_weights = particles, weights
+        n = self.num_particles
         new_particles = np.zeros_like(particles)
-        new_weights = np.ones_like(weights) / self.num_particles
-        cumulative_sum = np.cumsum(weights)
-        cumulative_sum[-1] = 1.0
 
-        indices = np.searchsorted(cumulative_sum, np.random.random(self.num_particles))
+        r = np.random.uniform(0, 1 / n)
+        c = weights[0]
+        i = 0
 
-        for i, idx in enumerate(indices):
-            new_particles[i, :] = particles[idx, :]
+        for m in range(n):
+            u = r + m / n
+            while u > c:
+                i += 1
+                c += weights[i]
+            new_particles[m] = particles[i]
 
+        new_weights = np.ones(n) / n
         return new_particles, new_weights
 
     def mean_and_variance(self, particles):

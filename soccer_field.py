@@ -55,41 +55,43 @@ class Field:
         prev_x, prev_y, prev_theta = x.ravel()
         rot1, trans, rot2 = u.ravel()
 
-        G = np.eye(3)
-        G[0, 2] = -trans * np.sin(prev_theta + rot1)
-        G[1, 2] = trans * np.cos(prev_theta + rot1)
+        _, _, theta = x.ravel()
+        rot1, trans, _ = u.ravel()
+        theta1 = theta + rot1
+
+        G = np.array([
+            [1, 0, -trans * np.sin(theta1)],
+            [0, 1,  trans * np.cos(theta1)],
+            [0, 0, 1]
+        ])
         return G
 
     def V(self, x, u):
         """Compute the Jacobian of the dynamics with respect to the control."""
         prev_x, prev_y, prev_theta = x.ravel()
         rot1, trans, rot2 = u.ravel()
-        
-        V = np.zeros((3, 3))
-        V[0, 0] = np.cos(prev_theta + rot1)
-        V[0, 1] = -np.sin(prev_theta + rot1)
-        V[1, 0] = np.sin(prev_theta + rot1)
-        V[1, 1] = np.cos(prev_theta + rot1)
-        V[2, 2] = 1
+        _, _, theta = x.ravel()
+        rot1, trans, _ = u.ravel()
+        theta1 = theta + rot1
+
+        V = np.array([
+            [-trans * np.sin(theta1), np.cos(theta1), 0],
+            [ trans * np.cos(theta1), np.sin(theta1), 0],
+            [1, 0, 1]
+        ])
         return V
 
     def H(self, x, marker_id):
         """Compute the Jacobian of the observation with respect to the state."""
         prev_x, prev_y, prev_theta = x.ravel()
-        
-        marker_x = self.MARKER_X_POS[marker_id]
-        marker_y = self.MARKER_Y_POS[marker_id]
+        x_r, y_r, theta = x.ravel()
+        x_l = self.MARKER_X_POS[marker_id]
+        y_l = self.MARKER_Y_POS[marker_id]
 
-        dx = marker_x - prev_x
-        dy = marker_y - prev_y
-
+        dx = x_l - x_r
+        dy = y_l - y_r
         q = dx**2 + dy**2
-        
-        H = np.zeros((1, 3))
-        H[0, 0] = -dy / q
-        H[0, 1] = -dx / q
-        H[0, 2] = -1
-        
+        H = np.array([[dy / q, -dx / q, -1]])
         return H
 
     def forward(self, x, u):
