@@ -144,6 +144,8 @@ To run these algorithms, you can use the provided `localization.py` script. It a
 Run the run.bat file & also Docker Image is named as state_estimator.tar placed. You can run the docker image or also can run.bat file
 
 ```bash
-For Docker Image
-For Example#
+To Create Docker Image, run the following Command;
+docker build -t state_estimator
+
+To Run the Docker Image
 $ docker run -it --rm state_estimator  python localization.py pf --seed 0
