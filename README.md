@@ -140,7 +140,10 @@ To run these algorithms, you can use the provided `localization.py` script. It a
 
 ---
 
-### Example Command for EKF:
+###  How To Run:
+Run the run.bat file & also Docker Image is named as state_estimator.tar placed. You can run the docker image or also can run.bat file
 
 ```bash
-$ python localization.py --plot ekf
+For Docker Image
+For Example#
+$ docker run -it --rm state_estimator  python localization.py pf --seed 0
