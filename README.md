@@ -2,6 +2,25 @@
 
 This documentation covers the implementation of the **Extended Kalman Filter (EKF)** and **Monte Carlo Localization (MCL)**, used in the context of robot localization in a soccer field environment. The main goal is to estimate the robot's position based on noisy measurements and actions.
 
+**Bayes Filter**
+
+ A **Filter** takes noise (uncertainty) out of an input to get a more accurate estimate as output. The term Bayes is applied because concepts from Bayesian statistics are involved. In Bayesian statistics, past information is taken into account in order to generate estimated values under uncertainty. Simply put, a Bayes Filter is an estimation algorithm that uses past values to provide a more accurate estimate, compared to an algorithm that does not consider past values.
+
+**Kalman ﬁlter** is a special case of Bayesian ﬁltering.
+
+**Bayes Filter Initialization**
+
+![Image description](data/fil1.png)
+
+Image 1: In our example, the robot is placed somewhere in a corridor. There are only three spotlights illuminating grid cells nr. 1, 3, and 7; the rest are not illuminated. The robot could be located in any of these 10 grid cells.
+
+1 : Our initial **belief** about the robot's position.
+
+ Since all grid cells are equally possible, our best guess is to assign an equal probability to each grid cell. This guess can be graphically represented by a so-called discrete probability distribution that consists of 10 different values where each value represents the probability of being in one grid cell.
+
+
+
+
 ## 1. Extended Kalman Filter (EKF)
 
 The **Extended Kalman Filter (EKF)** is a nonlinear version of the standard Kalman Filter. It works by linearizing the nonlinear process and measurement models using a first-order Taylor series expansion (i.e., Jacobian matrices).
