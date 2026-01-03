@@ -14,6 +14,8 @@ This documentation covers the implementation of the **Extended Kalman Filter (EK
 
 Image 1: In our example, the robot is placed somewhere in a corridor. There are only three spotlights illuminating grid cells nr. 1, 3, and 7; the rest are not illuminated. The robot could be located in any of these 10 grid cells.
 
+![Image description](data/fil2.png)
+
 1 : Our initial **belief** about the robot's position.
 
  Since all grid cells are equally possible, our best guess is to assign an equal probability to each grid cell. This guess can be graphically represented by a so-called discrete probability distribution that consists of 10 different values where each value represents the probability of being in one grid cell.
