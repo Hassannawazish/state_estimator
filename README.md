@@ -17,6 +17,12 @@ Image 1: In our example, the robot is placed somewhere in a corridor. There are 
 1 : Our initial **belief** about the robot's position.
 
  Since all grid cells are equally possible, our best guess is to assign an equal probability to each grid cell. This guess can be graphically represented by a so-called discrete probability distribution that consists of 10 different values where each value represents the probability of being in one grid cell.
+ In the initial belief, there 0.1 probability for all grid cells.
+
+The **correction step** consists of incorporating the sensor measurements to correct the stated estimate based on sensor readings and a map of the environment. Note that sometimes the term “measurement” is called “observation” in different literature.
+
+belief = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+
 
 
 
